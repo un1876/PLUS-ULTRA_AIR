@@ -1,0 +1,206 @@
+<!-- File: templates/admin_statistics.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 대시보드 – CNU-AIR</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #f8f8f8;
+      color: #333;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 20px 40px;
+      background-color: white;
+      border-bottom: 1px solid #ccc;
+    }
+    .header h1 {
+      flex: 1;
+      margin: 0;
+      font-size: 36px;
+    }
+    .nav-input {
+      padding: 6px 10px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      width: 200px;
+      margin-right: 8px;
+    }
+    .nav-btn {
+      margin-left: 8px;
+      padding: 6px 14px;
+      border: 1px solid #aaa;
+      background-color: #f5f5f5;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color .2s, color .2s;
+    }
+    .nav-btn.active {
+      background-color: #7B61FF;
+      color: white;
+      border-color: #7B61FF;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .tab-buttons {
+      margin-bottom: 20px;
+    }
+    .tab-buttons a {
+      text-decoration: none;
+    }
+    .tab-buttons button {
+      margin-right: 12px;
+    }
+    .stats-panel {
+      display: none;
+    }
+    .stats-panel.active {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+    }
+    th, td {
+      padding: 12px 8px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <!-- 상단 헤더: 관리자 페이지 주요 내비게이션 -->
+  <header class="header">
+    <h1>CNU-AIR 관리자</h1>
+    <!-- 검색 입력창 (미구현) -->
+    <input class="nav-input" type="text" placeholder="Search…">
+    <!-- 홈으로 이동 -->
+    <button class="nav-btn" onclick="location.href='{{ url_for('home') }}'">
+      홈
+    </button>
+    <!-- 현재 통계 조회 탭 활성화 -->
+    <button id="btn-statistics" class="nav-btn active">
+      통계 조회
+    </button>
+    <!-- 항공편 관리 탭 (추후 구현) -->
+    <button class="nav-btn">항공편 관리</button>
+    <!-- 회원 관리 탭 (추후 구현) -->
+    <button class="nav-btn">회원 관리</button>
+    <!-- 로그아웃 -->
+    <button class="nav-btn" onclick="location.href='{{ url_for('auth.logout') }}'">
+      Log out
+    </button>
+  </header>
+
+  <div class="container">
+    <h2>통계 조회</h2>
+
+    <!-- 탭 버튼: 그룹 함수 vs 윈도우 함수 -->
+    <div class="tab-buttons">
+      <!-- 그룹 합계 탭으로 이동, active_tab 값에 따라 버튼 스타일 적용 -->
+      <a href="{{ url_for('statistics.admin_statistics', tab='group') }}">
+        <button id="tab-group"
+                class="nav-btn {% if active_tab=='group' %}active{% endif %}">
+          1. 좌석 등급별 예약금액 합계
+        </button>
+      </a>
+      <!-- 윈도우 함수 탭으로 이동, active_tab 값에 따라 버튼 스타일 적용 -->
+      <a href="{{ url_for('statistics.admin_statistics', tab='window') }}">
+        <button id="tab-window"
+                class="nav-btn {% if active_tab=='window' %}active{% endif %}">
+          2. 항공사별 좌석 가격 순위
+        </button>
+      </a>
+    </div>
+
+    <!-- 1. GROUP ROLLUP 결과 표시 패널 -->
+    <div id="panel-group"
+         class="stats-panel {% if active_tab=='group' %}active{% endif %}">
+      <h3>서울 → 뉴욕 행 항공사별 & 좌석 등급별 예약된 좌석 가격 총합</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>항공사</th>
+            <th>좌석 등급</th>
+            <th>좌석 가격 합계 (원)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 파이썬에서 전달된 group_stats 리스트 루프 -->
+          {% for row in group_stats %}
+          <tr>
+            <!-- NULL일 경우 '모든 항공사'/'모든 좌석 등급' 표시 -->
+            <td>{{ row.airline or '모든 항공사' }}</td>
+            <td>{{ row.seat_class or '모든 좌석 등급' }}</td>
+            <!-- 콤마 포맷 적용 -->
+            <td>{{ "{:,}".format(row.total_price) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 2. WINDOW RANK 결과 표시 패널 -->
+    <div id="panel-window"
+         class="stats-panel {% if active_tab=='window' %}active{% endif %}">
+      <h3>각 항공사별 좌석 등급의 가격 순위</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>고객 이름</th>
+            <th>항공사</th>
+            <th>좌석 등급</th>
+            <th>가격 (원)</th>
+            <th>순위</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 파이썬에서 전달된 rank_stats 리스트 루프 -->
+          {% for row in rank_stats %}
+          <tr>
+            <td>{{ row.customer_name }}</td>
+            <td>{{ row.airline }}</td>
+            <td>{{ row.seat_class }}</td>
+            <td>{{ "{:,}".format(row.price) }}</td>
+            <td>{{ row.price_rank }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript를 통한 추가 탭 전환 로직 (필수는 아님)
+    const tabGroupBtn  = document.getElementById('tab-group');
+    const tabWindowBtn = document.getElementById('tab-window');
+    const panelGroup   = document.getElementById('panel-group');
+    const panelWindow  = document.getElementById('panel-window');
+
+    tabGroupBtn.addEventListener('click', () => {
+      tabGroupBtn.classList.add('active');
+      tabWindowBtn.classList.remove('active');
+      panelGroup.classList.add('active');
+      panelWindow.classList.remove('active');
+    });
+    tabWindowBtn.addEventListener('click', () => {
+      tabWindowBtn.classList.add('active');
+      tabGroupBtn.classList.remove('active');
+      panelWindow.classList.add('active');
+      panelGroup.classList.remove('active');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>항공편 조회 결과 – CNU AIR</title>
+
+  <!-- ▣ Google Font Import (Noto Sans KR) -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+  <!-- ▣ 화면 전체에 적용되는 CSS 변수·스타일  -->
+  <style>
+    :root {
+      /*  디자인 토큰 – 색상 · 여백 · 라운드 값 */
+      --bg-primary:  #fff;
+      --bg-secondary:#fafafa;
+      --text-main:   #222;
+      --text-default:#333;
+      --border:      #ddd;
+      --accent-blue: #4dc9f6;
+      --accent-red:  #e74c3c;
+      --btn-bg:      #333;
+      --btn-hover:   #555;
+      --card-shadow: rgba(0,0,0,0.05);
+      --spacing:     16px;
+      --radius:      8px;
+    }
+    /*  리셋 & 기본 항목 */
+    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+
+    body{
+      font-family:'Noto Sans KR',sans-serif;
+      background:var(--bg-secondary);
+      color:var(--text-default);
+    }
+
+    /*  헤더(로고·메뉴) */
+    .header{
+      background:var(--bg-primary);
+      padding:var(--spacing) 32px;
+      display:flex;align-items:center;
+      border-bottom:1px solid var(--border);
+      max-width:1200px;margin:0 auto;
+    }
+    .header h1{
+      font-size:28px;color:var(--text-main);
+      flex:1;font-weight:700;
+    }
+    .nav{display:flex;gap:8px;}
+    .nav button{
+      padding:6px 14px;border:1px solid var(--border);
+      background:var(--bg-secondary);border-radius:var(--radius);
+      cursor:pointer;transition:background .2s;font-size:14px;
+    }
+    .nav button:hover{background:var(--btn-hover);color:#fff;}
+
+    /*  레이아웃 */
+    .container{
+      display:flex;max-width:1200px;
+      margin:var(--spacing) auto;gap:24px;padding:0 16px;
+    }
+    /* ── 사이드바 */
+    .sidebar{
+      width:200px;background:var(--bg-primary);
+      border-right:1px solid var(--border);padding:24px 16px;
+    }
+    .sidebar h3{font-size:16px;margin-bottom:16px;color:var(--text-main);font-weight:500;}
+    .sidebar ul{list-style:none;}
+    .sidebar li{margin-bottom:8px;}
+    .sidebar a{
+      text-decoration:none;color:var(--text-default);transition:color .2s;
+    }
+    .sidebar li.active a,
+    .sidebar a:hover{color:var(--accent-blue);font-weight:500;}
+
+    /* ── 메인 컨텐츠 */
+    .main{flex:1;display:grid;gap:24px;}
+
+    /* ▣ 정렬(Select Box) 폼 */
+    .sort-form{
+      background:var(--bg-primary);
+      padding:16px;border-radius:var(--radius);
+      box-shadow:0 4px 12px var(--card-shadow);
+      display:flex;align-items:center;gap:12px;
+    }
+    .sort-form label{font-weight:500;}
+    .sort-form select{
+      padding:6px 10px;border:1px solid var(--border);
+      border-radius:4px;background:var(--bg-secondary);
+      cursor:pointer;font-size:14px;
+    }
+
+    /* ▣ 개별 항공편 카드 */
+    .flight-card{
+      background:var(--bg-primary);
+      border-radius:var(--radius);
+      box-shadow:0 4px 12px var(--card-shadow);
+      padding:24px;position:relative;
+    }
+    .flight-card h3{font-size:18px;margin-bottom:12px;color:var(--text-main);font-weight:700;}
+    .route{
+      font-weight:700;font-size:20px;
+      text-align:center;margin:12px 0;
+    }
+    .price-tag{
+      position:absolute;top:24px;right:24px;
+      background:var(--accent-blue);color:#fff;
+      padding:4px 8px;border-radius:4px;font-size:12px;
+    }
+    .datetime,.remain{font-size:14px;margin-bottom:8px;color:var(--text-default);}
+    /*  예약 버튼 영역 */
+    .seat-row{
+      display:flex;align-items:center;gap:12px;
+    }
+    .seat-row input{
+      flex:1;padding:8px;border:1px solid var(--border);
+      border-radius:var(--radius);font-size:14px;background:#f5f5f5;
+    }
+    .seat-row .btn-book{
+      padding:10px 16px;background:var(--btn-bg);color:#fff;
+      border:none;border-radius:var(--radius);
+      cursor:pointer;transition:background .2s;
+    }
+    .seat-row .btn-book:hover{background:var(--btn-hover);}
+    .no-results{
+      text-align:center;font-size:16px;color:var(--accent-red);
+    }
+
+    /* ▣ 반응형(모바일) */
+    @media(max-width:768px){
+      .container{flex-direction:column;}
+      .sidebar{
+        width:100%;border-right:none;border-bottom:1px solid var(--border);
+      }
+      .seat-row{flex-direction:column;align-items:stretch;}
+    }
+  </style>
+</head>
+<body>
+  <!-- ▣ 헤더(로고 + 네비게이션) -->
+  <header class="header">
+    <h1>
+      <!--  » 로그인 홈으로 돌아가기 -->
+      <a href="{{ url_for('auth.login_complete_homepage') }}">CNU-AIR</a>
+    </h1>
+    <div class="nav">
+      <button onclick="location.href='{{ url_for('reservation.flights_form') }}'">항공편</button>
+      <button onclick="location.href='{{ url_for('auth.logout') }}'">Log out</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- ▣ 좌측 사이드바 -->
+    <aside class="sidebar">
+      <h3>항공편 조회 결과</h3>
+      <ul>
+        <li class="active"><a href="#">결과</a></li>
+      </ul>
+    </aside>
+
+    <!-- ▣ 메인 영역 -->
+    <main class="main">
+      <!-- ─────────────── 검색 결과 정렬 옵션  -->
+      <form class="sort-form"
+            method="get"
+            action="{{ url_for('reservation.search') }}">
+        <!-- ★ hidden: 기존 검색 조건을 보존해서 다시 GET 보냄 -->
+        <input type="hidden" name="departure"  value="{{ departure }}"/>
+        <input type="hidden" name="arrival"    value="{{ arrival }}"/>
+        <input type="hidden" name="date_start" value="{{ date_start }}"/>
+        {% if date_end %}
+          <input type="hidden" name="date_end"   value="{{ date_end }}"/>
+        {% endif %}
+        <input type="hidden" name="seat_class" value="{{ seat_class }}"/>
+
+        <label for="sort-by">정렬</label>
+        <!-- 변경 즉시 submit → 새로운 정렬 결과 조회 -->
+        <select id="sort-by" name="sort_by" onchange="this.form.submit()">
+          <option value="price_asc"  {% if sort_by=='price_asc'  %}selected{% endif %}>가격 ↑</option>
+          <option value="price_desc" {% if sort_by=='price_desc' %}selected{% endif %}>가격 ↓</option>
+          <option value="dep_asc"    {% if sort_by=='dep_asc'    %}selected{% endif %}>출발 시간 ↑</option>
+          <option value="dep_desc"   {% if sort_by=='dep_desc'   %}selected{% endif %}>출발 시간 ↓</option>
+          <option value="arr_asc"    {% if sort_by=='arr_asc'    %}selected{% endif %}>도착 시간 ↑</option>
+          <option value="arr_desc"   {% if sort_by=='arr_desc'   %}selected{% endif %}>도착 시간 ↓</option>
+        </select>
+      </form>
+
+      <!-- ─────────────── 결과 카드 리스트 -->
+      {% if results %}
+        {% for r in results %}
+          <div class="flight-card">
+            <!-- 가격 뱃지 -->
+            <div class="price-tag">{{ "{:,}".format(r.price|int) }}원</div>
+
+            <h3>#{{ loop.index }}: {{ r.airline }} ({{ r.flightNo }})</h3>
+
+            <div class="route">
+              {{ r.departureAirport }} → {{ r.arrivalAirport }}
+            </div>
+
+            <!-- 출·도착 시각 -->
+            <div class="datetime">
+              출발: {{ r.depDT }} / 도착: {{ r.arrDT }}
+            </div>
+
+            <!-- 총 좌석·남은 좌석 -->
+            <div class="remain">
+              총 좌석: {{ r.total_seats }}석<br>
+              남은 좌석: {{ r.remaining_seats }}석
+            </div>
+
+            <!-- 예약 버튼 행 -->
+            <div class="seat-row">
+              <!-- 선택 좌석 등급(읽기전용) -->
+              <input type="text" value="{{ r.seatClass }}" readonly/>
+              <!-- 예약하기 버튼:  /book 라우트로 이동 -->
+              <button class="btn-book"
+                onclick="location.href='{{ url_for(
+                  'reservation.book',
+                  flightNo=r.flightNo,
+                  depDT=r.depDT,
+                  seatClass=r.seatClass
+                ) }}'">
+                예약하기
+              </button>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <!-- 검색 결과 없음 -->
+        <p class="no-results">조건에 맞는 항공편이 없습니다.</p>
+      {% endif %}
+
+    </main>
+  </div>
+</body>
+</html>

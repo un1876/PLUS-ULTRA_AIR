@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>이력 조회 – 예약 내역 조회 | CNU-AIR</title>
+
+  <!-- Google Font import -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+  <style>
+    /* ─────────────────────────────────────────
+       ※ 화면 전반에 적용되는 색·간격·폰트 등
+       ───────────────────────────────────────── */
+    :root {
+      --bg-primary: #fff;
+      --bg-secondary: #fafafa;
+      --text-main: #222;
+      --text-default: #333;
+      --border-color: #e0e0e0;
+      --accent: #7B61FF;
+      --btn-bg: #e74c3c;
+      --btn-hover: #c0392b;
+      --card-shadow: rgba(0,0,0,0.05);
+      --spacing: 16px;
+    }
+
+    /* 기본 리셋 */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* 전체 배경 및 기본 글꼴 */
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-default);
+    }
+
+    /* ───────── 상단 헤더 영역 ───────── */
+    .header {
+      background: var(--bg-primary);
+      padding: var(--spacing) 32px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header h1 {
+      font-size: 28px;
+      color: var(--text-main);
+      flex: 1;                   /* 로고 왼쪽 정렬, 나머지 차지 */
+      font-weight: 700;
+    }
+    /* ───────── 헤더 내 네비게이션 ───────── */
+    .nav {
+      display: flex;
+      gap: 8px;
+    }
+    .nav input {
+      padding: 6px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+    }
+    .nav button {
+      padding: 6px 14px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-default);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .nav button:hover {
+      background: var(--btn-hover);
+      color: #fff;
+    }
+
+    /* ───────── 기본 레이아웃(사이드바 + 메인) ───────── */
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: 24px auto;
+      gap: 24px;
+      padding: 0 16px;
+    }
+
+    /* 왼쪽 사이드바 */
+    .sidebar {
+      width: 200px;
+      background: var(--bg-primary);
+      border-right: 1px solid var(--border-color);
+      padding: 24px 16px;
+      font-size: 14px;
+    }
+    .sidebar h3 {
+      font-size: 16px;
+      margin-bottom: 16px;
+      color: var(--text-main);
+    }
+    .sidebar ul { list-style: none; }
+    .sidebar li { margin-bottom: 12px; }
+    .sidebar li.active > a {
+      font-weight: 500;
+      color: var(--accent);       /* 현재 페이지 강조 */
+    }
+    .sidebar a {
+      text-decoration: none;
+      color: var(--text-default);
+      transition: color .2s;
+    }
+    .sidebar a:hover { color: var(--accent); }
+
+    /* 메인 콘텐츠 영역 */
+    .main {
+      flex: 1;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px var(--card-shadow);
+      padding: 32px;
+    }
+    .main h2 {
+      font-size: 22px;
+      margin-bottom: 24px;
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    /* ───────── 조회 옵션 폼 ───────── */
+    .filter-toggle { margin-bottom: 16px; }
+    .filter-form {
+      margin-bottom: 24px;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+    }
+    .filter-form label { margin-right: 12px; font-size: 14px; }
+    .filter-form input[type="datetime-local"],
+    .filter-form button {
+      padding: 6px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
+    /* ───────── 예약 카드 스타일 ───────── */
+    .info-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+    .info-card strong { color: var(--text-main); }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-secondary);
+      border-radius: 6px;
+      padding: 12px 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+      font-size: 15px;
+    }
+    .info-row:last-of-type { margin-bottom: 24px; }
+
+    /* 예약 취소 버튼 */
+    .btn-cancel {
+      display: inline-block;
+      padding: 10px 20px;
+      background: var(--btn-bg);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-cancel:hover { background: var(--btn-hover); }
+
+    /* 반응형: 모바일에서 레이아웃 변경 */
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ───────── HEADER ───────── -->
+  <header class="header">
+    <h1>
+      <!-- 로고 클릭 시 로그인 완료 홈 -->
+      <a href="{{ url_for('auth.login_complete_homepage') }}">CNU-AIR</a>
+    </h1>
+    <div class="nav">
+      <input type="text" placeholder="Search...">
+      <button onclick="location.href='{{ url_for('reservation.flights_form') }}'">항공편</button>
+      <button onclick="location.href='{{ url_for('reservation.reservation_history') }}'">My page</button>
+      <button onclick="location.href='{{ url_for('auth.logout') }}'">Log out</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- ───────── SIDEBAR ───────── -->
+    <aside class="sidebar">
+      <h3>My page</h3>
+      <ul>
+        <li><a href="#">회원 정보 수정/삭제</a></li>
+        <li><a href="{{ url_for('reservation.cancel_history') }}">취소 내역 조회</a></li>
+        <!-- 현재 활성 페이지는 '예약 내역 조회' -->
+        <li class="active"><a href="{{ url_for('reservation.reservation_history') }}">예약 내역 조회</a></li>
+        <li><a href="{{ url_for('reservation.integrated_history') }}">통합 조회</a></li>
+      </ul>
+    </aside>
+
+    <!-- ───────── MAIN CONTENT ───────── -->
+    <main class="main">
+      <h2>이력 조회 – 예약 내역 조회</h2>
+
+      <!-- Flash 메시지 영역 -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for cat, msg in messages %}
+            <p style="color: {{ 'green' if cat=='success' else 'red' }};">{{ msg }}</p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <!-- 1) 조회 옵션 토글 버튼 -->
+      <button id="filter-toggle" class="filter-toggle">조회 옵션</button>
+
+      <!-- 2) 기간·출발 전 등 필터 폼 (기본 숨김) -->
+      <form id="filter-form"
+            class="filter-form"
+            method="get"
+            action="{{ url_for('reservation.reservation_history') }}"
+            style="display: none;">
+        <!-- 조회 모드 라디오 -->
+        <label>
+          <input type="radio" name="mode" value="all" {% if mode=='all' %}checked{% endif %}>
+          전체 조회
+        </label>
+        <label>
+          <input type="radio" name="mode" value="upcoming" {% if mode=='upcoming' %}checked{% endif %}>
+          출발 전만
+        </label>
+        <label>
+          <input type="radio" name="mode" value="range" {% if mode=='range' %}checked{% endif %}>
+          기간 조회
+        </label>
+        <!-- 날짜 범위 입력 필드 (mode == 'range' 일 때만 노출) -->
+        <div id="date-range-fields"
+             style="margin-top:12px; {% if mode!='range' %}display:none;{% endif %}">
+          <input type="datetime-local" name="start_date" value="{{ start_date or '' }}">
+          ~
+          <input type="datetime-local" name="end_date"   value="{{ end_date   or '' }}">
+        </div>
+        <div style="margin-top:16px;">
+          <button type="submit">적용</button>
+        </div>
+      </form>
+
+      <!-- 3) 예약 내역 반복 출력 -->
+      {% for fn, depDT, arrDT, depAP, arrAP, sc, pay, rdt in reservations %}
+        <!-- 예약 정보 카드 -->
+        <div class="info-card">
+          <strong>항공사:</strong> {{ fn[0:2] }}<br>
+          <strong>항공편:</strong> {{ fn }}<br>
+          <strong>출발공항:</strong> {{ depAP }}<br>
+          <strong>도착공항:</strong> {{ arrAP }}<br>
+          <strong>좌석 등급:</strong> {{ sc }}<br>
+          <strong>결제 금액:</strong> {{ pay }}원
+        </div>
+
+        <!-- 출발·도착·예약일시 -->
+        <div class="info-row">
+          <span>출발 시각:</span><span>{{ depDT }}</span>
+        </div>
+        <div class="info-row">
+          <span>도착 시각:</span><span>{{ arrDT }}</span>
+        </div>
+        <div class="info-row">
+          <span>예약 일시:</span><span>{{ rdt }}</span>
+        </div>
+
+        <!-- 예약 취소 버튼 (POST 요청) -->
+        <div style="text-align:right; margin-bottom:32px;">
+          <form action="{{ url_for('cancel.cancel_reservation',
+                                   flightNo=fn,
+                                   depDT=depDT,
+                                   seatClass=sc) }}"
+                method="post"
+                onsubmit="return confirm('정말 예약을 취소하시겠습니까?');">
+            <button type="submit" class="btn-cancel">예약 취소</button>
+          </form>
+        </div>
+      {% else %}
+        <!-- 예약이 없을 때 -->
+        <p>조건에 맞는 예약 내역이 없습니다.</p>
+      {% endfor %}
+    </main>
+  </div>
+
+  <script>
+    /* ─── JS: 옵션 폼 토글 및 날짜 입력 표시 ─── */
+
+    // ① '조회 옵션' 버튼 클릭 시 폼 show/hide
+    document.getElementById('filter-toggle').addEventListener('click', function(){
+      const f = document.getElementById('filter-form');
+      f.style.display = (f.style.display === 'none') ? 'block' : 'none';
+    });
+
+    // ② 라디오 버튼 값 변경 시 날짜 필드 토글
+    document.querySelectorAll('input[name="mode"]').forEach(r => {
+      r.addEventListener('change', function(){
+        document.getElementById('date-range-fields').style.display =
+          (this.value === 'range') ? 'block' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

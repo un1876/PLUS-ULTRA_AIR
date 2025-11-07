@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이력 조회 – 취소 내역 조회 | CNU-AIR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+        rel="stylesheet">
+  <style>
+    :root {
+      --bg-white: #fff;
+      --bg-light: #fafafa;
+      --text-dark: #333;
+      --text-title: #222;
+      --border: #ddd;
+      --accent: #7B61FF;
+      --btn-bg: #e74c3c;
+      --btn-hover: #c0392b;
+      --shadow: rgba(0,0,0,0.05);
+      --spacing: 16px;
+      --radius: 6px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-dark);
+    }
+    .header {
+      display:flex; align-items:center;
+      padding:var(--spacing) 32px;
+      background:var(--bg-white);
+      border-bottom:1px solid var(--border);
+      max-width:1200px; margin:0 auto;
+    }
+    .header h1 {
+      font-size:28px; color:var(--text-title);
+      flex:1; font-weight:700;
+    }
+    .nav { display:flex; gap:8px; }
+    .nav button {
+      padding:6px 12px;
+      border:1px solid var(--border);
+      background:var(--bg-white);
+      border-radius:var(--radius);
+      cursor:pointer;
+      transition:background .2s;
+      font-size:14px;
+    }
+    .nav button:hover { background:var(--btn-hover); color:#fff; }
+
+    .container {
+      display:flex;
+      max-width:1200px;
+      margin:24px auto;
+      gap:24px; padding:0 16px;
+    }
+    .sidebar {
+      width:200px;
+      background:var(--bg-white);
+      border-right:1px solid var(--border);
+      padding:24px 16px;
+      font-size:14px;
+    }
+    .sidebar h3 {
+      font-size:16px; margin-bottom:16px;
+      color:var(--text-title);
+    }
+    .sidebar ul { list-style:none; }
+    .sidebar li { margin-bottom:12px; }
+    .sidebar li.active>a {
+      font-weight:500; color:var(--accent);
+    }
+    .sidebar a {
+      text-decoration:none; color:var(--text-dark);
+      transition:color .2s;
+    }
+    .sidebar a:hover { color:var(--accent); }
+
+    .main {
+      flex:1;
+      background:var(--bg-white);
+      border-radius:var(--radius);
+      box-shadow:0 4px 12px var(--shadow);
+      padding:32px;
+    }
+    .main h2 {
+      font-size:22px; margin-bottom:24px;
+      color:var(--text-title); font-weight:700;
+    }
+
+    /* 토글·폼 */
+    .filter-toggle {
+      margin-bottom:16px;
+      padding:8px 16px;
+      background:var(--accent);
+      color:#fff;
+      border:none; border-radius:var(--radius);
+      cursor:pointer;
+    }
+    .filter-form {
+      background:var(--bg-light);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:16px;
+      margin-bottom:24px;
+    }
+    .filter-form label {
+      margin-right:16px;
+      font-size:14px;
+    }
+    .filter-form input[type="datetime-local"] {
+      padding:4px 8px;
+      margin:0 8px;
+      font-size:14px;
+    }
+
+    .info-card {
+      background:var(--bg-light);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:16px;
+      margin-bottom:16px;
+      font-size:15px;
+    }
+    .info-card strong { color:var(--text-title); }
+
+    .info-row {
+      display:flex; justify-content:space-between; align-items:center;
+      background:var(--bg-light);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:12px 16px;
+      margin-bottom:16px;
+      font-size:15px;
+    }
+    .info-row:last-of-type { margin-bottom:24px; }
+
+    .btn-detail {
+      padding:8px 14px;
+      background:var(--btn-bg);
+      color:#fff;
+      border:none; border-radius:var(--radius);
+      cursor:pointer;
+      transition:background .2s;
+      font-size:14px;
+    }
+    .btn-detail:hover { background:var(--btn-hover); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1><a href="{{ url_for('auth.login_complete_homepage') }}">CNU-AIR</a></h1>
+    <div class="nav">
+      <button onclick="location.href='{{ url_for('reservation.flights_form') }}'">항공편</button>
+      <button onclick="location.href='{{ url_for('auth.logout') }}'">Log out</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <aside class="sidebar">
+      <h3>My page</h3>
+      <ul>
+        <li><a href="#">회원 정보 수정/삭제</a></li>
+        <li class="active"><a href="{{ url_for('reservation.cancel_history') }}">취소 내역 조회</a></li>
+        <li><a href="{{ url_for('reservation.reservation_history') }}">예약 내역 조회</a></li>
+        <li><a href="{{ url_for('reservation.integrated_history') }}">통합 조회</a></li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <h2>이력 조회 – 취소 내역 조회</h2>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for cat,msg in messages %}
+            <!-- Flash 메시지: 성공/오류에 따라 색상 구분 -->
+            <p style="color: {{ 'green' if cat=='success' else 'red' }};">
+              {{ msg }}
+            </p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <!-- 1) 조회 옵션 토글 버튼 -->
+      <button id="filter-toggle" class="filter-toggle">조회 옵션</button>
+
+      <!-- 2) 필터 폼: GET 파라미터로 mode, start_date, end_date 전달 -->
+      <form id="filter-form" class="filter-form"
+            method="get"
+            action="{{ url_for('reservation.cancel_history') }}"
+            style="display: none;">
+        <!-- 모드 선택: 전체 또는 기간별 -->
+        <label>
+          <input type="radio" name="mode" value="all"
+                 {% if mode=='all' %}checked{% endif %}>
+          전체 조회
+        </label>
+
+        <label>
+          <input type="radio" name="mode" value="range"
+                 {% if mode=='range' %}checked{% endif %}>
+          기간 조회
+        </label>
+        <!-- 날짜 범위 입력: mode가 'range'일 때만 표시 -->
+        <div id="date-range" style="margin-top:12px; {% if mode!='range' %}display:none;{% endif %}">
+          <input type="datetime-local" name="start_date"
+                 value="{{ start_date or '' }}" />
+          &nbsp;~&nbsp;
+          <input type="datetime-local" name="end_date"
+                 value="{{ end_date   or '' }}" />
+        </div>
+        <div style="margin-top:16px;">
+          <!-- 필터 적용 버튼 -->
+          <button type="submit">적용</button>
+        </div>
+      </form>
+
+      <!-- 3) 취소 내역 리스트 반복 출력 -->
+      {% for fn, depDT, arrDT, depAP, arrAP, sc, rf, cdt in cancels %}
+        <div class="info-card">
+          <strong>항공사:</strong> {{ fn[0:2] }}<br>
+          <strong>항공편:</strong> {{ fn }}<br>
+          <strong>출발공항:</strong> {{ depAP }}<br>
+          <strong>도착공항:</strong> {{ arrAP }}<br>
+          <strong>좌석 등급:</strong> {{ sc }}<br>
+          <strong>환불 금액:</strong> {{ rf }}원
+        </div>
+        <div class="info-row">
+          <!-- 출발 시각 -->
+          <span>출발 시각:</span><span>{{ depDT }}</span>
+        </div>
+        <div class="info-row">
+          <!-- 도착 시각 -->
+          <span>도착 시각:</span><span>{{ arrDT }}</span>
+        </div>
+        <div class="info-row">
+          <!-- 취소 시각 -->
+          <span>취소 시각:</span><span>{{ cdt }}</span>
+        </div>
+        <div style="text-align:right; margin-bottom:32px;">
+          <!-- 상세 보기 버튼: reservation_history로 이동 -->
+          <button class="btn-detail"
+                  onclick="location.href='{{ url_for('reservation.reservation_history',
+                                                    flightNo=fn,
+                                                    depDT=depDT,
+                                                    seatClass=sc) }}'">
+            예약 상세 보기
+          </button>
+        </div>
+      {% else %}
+        <!-- 취소 내역이 없을 때 안내문 -->
+        <p>조건에 맞는 취소 내역이 없습니다.</p>
+      {% endfor %}
+    </main>
+  </div>
+
+  <script>
+    // 폼 토글 기능: 버튼 클릭 시 필터 폼을 토글
+    document.getElementById('filter-toggle')
+      .addEventListener('click', () => {
+        const f = document.getElementById('filter-form');
+        f.style.display = f.style.display === 'none' ? 'block' : 'none';
+      });
+    // 라디오 선택 변경 시 날짜 입력 필드 표시/숨김
+    document.querySelectorAll('input[name="mode"]').forEach(r => {
+      r.addEventListener('change', e => {
+        document.getElementById('date-range').style.display =
+          e.target.value === 'range' ? 'block' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

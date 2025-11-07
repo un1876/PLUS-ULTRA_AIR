@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이력 조회 - CNU AIR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #fff;
+      --bg-secondary: #fafafa;
+      --text-main: #222;
+      --text-default: #333;
+      --border: #ddd;
+      --link: #0077cc;
+      --link-hover: #005fa3;
+      --spacing: 20px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-default);
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      background: var(--bg-primary);
+      padding: var(--spacing) 40px;
+      border-bottom: 1px solid var(--border);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header h1 {
+      font-size: 32px;
+      flex: 1;
+      color: var(--text-main);
+    }
+    .header .nav {
+      display: flex;
+      gap: 8px;
+    }
+    .nav input[type="text"] {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      width: 200px;
+      font-size: 14px;
+    }
+    .nav button {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    .nav button:hover { background: var(--bg-secondary); }
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: var(--spacing) auto;
+      padding: 0 20px;
+    }
+    .sidebar {
+      width: 200px;
+      border-right: 1px solid var(--border);
+      padding-right: 20px;
+      font-size: 14px;
+      color: var(--text-default);
+    }
+    .sidebar h3 {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+    .sidebar ul { list-style: none; }
+    .sidebar li { margin-bottom: 8px; }
+    .sidebar li.active a {
+      font-weight: 500;
+      color: var(--text-main);
+    }
+    .sidebar a {
+      text-decoration: none;
+      color: var(--text-default);
+      transition: color 0.2s;
+    }
+    .sidebar a:hover { color: var(--link); }
+    .main {
+      flex: 1;
+      padding-left: 40px;
+    }
+    .main h2 {
+      font-size: 24px;
+      margin-bottom: 24px;
+      color: var(--text-main);
+    }
+    .main ul { list-style: none; font-size: 16px; }
+    .main li { margin-bottom: 16px; }
+    .main a {
+      color: var(--link);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .main a:hover { color: var(--link-hover); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <!-- 클릭 시 로그인 완료 홈 페이지로 이동 -->
+    <h1><a href="{{ url_for('auth.login_complete_homepage') }}">CNU-AIR</a></h1>
+    <div class="nav">
+      <!-- 검색 입력 필드 (현재 기능 미구현) -->
+      <input type="text" placeholder="Search...">
+      <button>Search</button>
+      <!-- 항공편 검색 페이지로 이동 -->
+      <button onclick="location.href='{{ url_for('reservation.flights_form') }}'">항공편</button>
+      <!-- 사용자 마이페이지로 이동 -->
+      <button>My page</button>
+      <!-- 로그아웃 처리 -->
+      <button onclick="location.href='{{ url_for('auth.logout') }}'">Log Out</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <aside class="sidebar">
+      <h3>My page</h3>
+      <ul>
+        <!-- 사이드바 메뉴: 활성화된 '통합 조회' 표시 -->
+        <li><a>회원 정보 수정/삭제</a></li>
+        <li><a href="{{ url_for('reservation.reservation_history') }}">예약 내역 조회</a></li>
+        <li><a href="{{ url_for('reservation.cancel_history') }}">취소 내역 조회</a></li>
+        <li class="active">
+          <!-- 현재 페이지: 통합 조회 -->
+          <a href="{{ url_for('reservation.integrated_history') }}">통합 조회</a>
+        </li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <h2>이력 조회</h2>
+      <ul>
+        <!-- 주요 이력 조회 링크 목록 -->
+        <li>
+          <a href="{{ url_for('reservation.reservation_history') }}">
+            예약 내역 조회하러 가기
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('reservation.cancel_history') }}">
+            취소 내역 조회하러 가기
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('reservation.integrated_history') }}">
+            통합 조회 (예약+취소) 보러 가기
+          </a>
+        </li>
+      </ul>
+    </main>
+  </div>
+</body>
+</html>

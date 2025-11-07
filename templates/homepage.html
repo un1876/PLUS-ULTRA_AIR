@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLUS-ULTRA AIR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* All-Might palette */
+      --hero-navy:#0a0e2e;
+      --hero-navy-2:#0b1547;
+      --hero-blue:#1c3ff0;
+      --hero-red:#e11d2e;
+      --hero-gold:#ffd54a;
+      --hero-gold-2:#ffb300;
+      --hero-violet:#8239ff;
+
+      /* mapped tokens (이름만 유지) */
+      --primary-bg: var(--hero-navy);      /* header/footer */
+      --secondary-bg:#0f1b4b;              /* cards */
+      --text-default:#eaf0ff;              /* 본문 글자 */
+      --text-inactive:#a8b1d9;             /* 보조 글자 */
+      --border-color:rgba(255,255,255,.12);
+      --btn-bg: linear-gradient(135deg,var(--hero-gold),var(--hero-gold-2));
+      --btn-hover: linear-gradient(135deg,#ffe76b,#ffc107);
+      --btn-border:rgba(255,215,0,.65);
+      --card-shadow:rgba(130,57,255,.28);  /* 보라빛 그림자 */
+      --accent: var(--hero-gold);          /* 포인트 텍스트 */
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family:'Noto Sans KR',sans-serif;
+      color:var(--text-default);
+      /* 전기광택 네이비 배경 */
+      background:
+        radial-gradient(1100px 700px at 85% -10%, rgba(255,234,138,.18), transparent 45%),
+        radial-gradient(900px 600px at -10% 20%, rgba(130,57,255,.20), transparent 40%),
+        linear-gradient(180deg, var(--hero-navy) 0%, var(--hero-navy-2) 60%, #0f1b4b 100%);
+    }
+
+    .header{
+      background:linear-gradient(180deg,rgba(10,14,46,.85),rgba(10,14,46,.7));
+      padding:16px 40px;
+      border-bottom:1px solid var(--border-color);
+      display:flex;align-items:center;
+      max-width:1200px;margin:0 auto;
+      color:var(--text-default);
+    }
+    .header h1{
+      font-size:32px;margin:0;flex:1;
+      color:var(--accent);
+      text-shadow:
+        0 0 10px rgba(255,213,74,.6),
+        0 0 26px rgba(28,63,240,.28);
+    }
+
+    .nav-input{
+      width:240px;margin-right:12px;
+      padding:8px 12px;font-size:14px;outline:none;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:4px;
+      background:rgba(255,255,255,.06);
+      color:var(--text-default);
+    }
+    .nav-input::placeholder{color:#9aa6db;}
+
+    .nav-btn{
+      margin-left:8px;padding:8px 16px;font-size:14px;
+      border:1px solid var(--btn-border);
+      background:var(--btn-bg);
+      color:#0a0e2e; /* 금색 위 가독성 */
+      border-radius:6px;cursor:pointer;
+      transition:background .2s, box-shadow .2s;
+      text-decoration:none;display:inline-flex;align-items:center;justify-content:center;
+      box-shadow:0 0 0 1px rgba(255,255,255,.06), 0 6px 18px rgba(255,213,74,.22);
+    }
+    .nav-btn:hover{
+      background:var(--btn-hover);
+      box-shadow:0 0 0 1px rgba(255,255,255,.08), 0 8px 22px rgba(255,235,124,.32);
+    }
+
+    main{margin:0;padding:0;}
+
+    .footer{
+      background:linear-gradient(180deg,rgba(10,14,46,.92),rgba(10,14,46,.8));
+      padding:40px 20px;border-top:1px solid var(--border-color);
+      color:var(--text-default);
+    }
+    .footer__inner{max-width:1200px;margin:0 auto;}
+    .footer__grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:32px;
+    }
+    .footer__item{
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+      border-radius:8px;padding:24px;
+      box-shadow:0 4px 12px var(--card-shadow);
+      text-align:left;transition:transform .2s, box-shadow .2s;
+      color:var(--text-default);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .footer__item:hover{
+      transform:translateY(-6px);
+      box-shadow:0 10px 26px rgba(28,63,240,.35), 0 0 0 1px rgba(255,213,74,.28) inset;
+    }
+
+    .footer__icon{
+      font-size:28px;
+      background:linear-gradient(135deg,#1c3ff0 0%, #6a2bf8 50%, #e11d2e 100%);
+      color:#ffffff;
+      width:48px;height:48px;line-height:48px;border-radius:50%;
+      text-align:center;margin-bottom:16px;
+      box-shadow:0 0 14px rgba(130,57,255,.45);
+    }
+    .footer__title{
+      font-size:18px;font-weight:700;margin:0 0 12px;
+      color:var(--accent);
+      text-shadow:0 0 8px rgba(255,213,74,.45);
+    }
+    .footer__list{list-style:none;padding:0;margin:0;font-size:14px;line-height:1.6;color:var(--text-default);}
+    .footer__list li{position:relative;padding-left:16px;}
+    .footer__list li::before{
+      content:'\\2022';position:absolute;left:0;
+      color:var(--hero-red);
+      text-shadow:0 0 8px rgba(225,29,46,.45);
+    }
+
+    @media (max-width:600px){
+      .header,.footer{padding:16px;}
+      .nav-input{width:160px;}
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>PLUS-ULTRA AIR</h1>
+    <input class="nav-input" type="text" placeholder="Search...">
+    <a href="/search" class="nav-btn">Search</a>
+    <a href="/flights" class="nav-btn">항공편</a>
+    <a href="{{ url_for('auth.login') }}" class="nav-btn">My page</a>
+    <a href="/login" class="nav-btn">Log In</a>
+  </header>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__grid">
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">공지사항</h3>
+          <ul class="footer__list">
+            <li>국내선 유류할증료</li>
+            <li>국내선 마일리지</li>
+          </ul>
+        </div>
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">회사소개</h3>
+          <ul class="footer__list">
+            <li>C-AIR에 대하여</li>
+            <li>투자정보</li>
+            <li>지속가능경영</li>
+            <li>뉴스룸</li>
+          </ul>
+        </div>
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">고객지원</h3>
+          <ul class="footer__list">
+            <li>고객의 말씀</li>
+            <li>서비스 센터</li>
+            <li>e-서식함</li>
+          </ul>
+        </div>
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">약관 및 규정</h3>
+          <ul class="footer__list">
+            <li>개인정보 처리방침</li>
+            <li>이용 약관</li>
+            <li>운송약관 및 고지사항</li>
+            <li>소비자 안전 관련 정보</li>
+          </ul>
+        </div>
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">기타 안내</h3>
+          <ul class="footer__list">
+            <li>기업 출장 / 전용기</li>
+            <li>고객 안내 서비스</li>
+            <li>항공교통이용자 서비스 계획</li>
+            <li>관련 사이트</li>
+          </ul>
+        </div>
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">인기 방문 국가</h3>
+          <ul class="footer__list">
+            <li>일본</li>
+            <li>포르투갈</li>
+            <li>미국</li>
+            <li>호주</li>
+            <li>중국</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>항공편 조회 – CNU AIR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #fff;
+      --bg-secondary: #fafafa;
+      --text-main: #222;
+      --text-default: #333;
+      --border: #ddd;
+      --accent: #7B61FF;
+      --btn-bg: #333;
+      --btn-hover: #555;
+      --card-shadow: rgba(0,0,0,0.05);
+      --spacing: 16px;
+      --radius: 6px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-default);
+    }
+    .header {
+      background: var(--bg-primary);
+      padding: var(--spacing) 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header h1 {
+      font-size: 28px;
+      color: var(--text-main);
+      flex: 1;
+      font-weight: 700;
+    }
+    .nav {
+      display: flex;
+      gap: 8px;
+    }
+    .nav button {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-default);
+      border-radius: var(--radius);
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .nav button:hover { background: var(--btn-hover); color: #fff; }
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: 24px auto;
+      gap: 24px;
+      padding: 0 16px;
+    }
+    .sidebar {
+      width: 200px;
+      background: var(--bg-primary);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      font-size: 14px;
+    }
+    .sidebar h3 {
+      font-size: 16px;
+      margin-bottom: 16px;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+    .sidebar ul { list-style: none; }
+    .sidebar li { margin-bottom: 12px; }
+    .sidebar li.active > a {
+      font-weight: 500;
+      color: var(--accent);
+    }
+    .sidebar a {
+      text-decoration: none;
+      color: var(--text-default);
+      transition: color 0.2s;
+    }
+    .sidebar a:hover { color: var(--accent); }
+    .main {
+      flex: 1;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px var(--card-shadow);
+      padding: 32px;
+    }
+    .main h2 {
+      font-size: 22px;
+      margin-bottom: 24px;
+      color: var(--text-main);
+      font-weight: 700;
+    }
+    form {
+      display: grid;
+      row-gap: 16px;
+    }
+    .form-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .form-group label {
+      width: 100px;
+      font-weight: 500;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="date"],
+    .form-group select {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      background: var(--bg-secondary);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--accent);
+    }
+    .actions {
+      text-align: right;
+    }
+    .actions .btn-query {
+      padding: 10px 20px;
+      background: var(--btn-bg);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 14px;
+    }
+    .actions .btn-query:hover {
+      background: var(--btn-hover);
+    }
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+      .main { margin-top: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>
+      <!-- 클릭 시 로그인 완료 홈으로 -->
+      <a href="{{ url_for('auth.login_complete_homepage') }}">CNU-AIR</a>
+    </h1>
+    <div class="nav">
+      <button onclick="location.href='{{ url_for('reservation.flights_form') }}'">
+        항공편
+      </button>
+      <button onclick="location.href='{{ url_for('auth.logout') }}'">
+        Log out
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+    <aside class="sidebar">
+      <h3>항공편 조회</h3>
+      <ul>
+        <li class="active"><a href="#">항공편 조회</a></li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <h2>항공편 조회</h2>
+      <!-- 검색 폼: GET 방식으로 /search 라우팅 -->
+      <form action="{{ url_for('reservation.search') }}" method="get">
+        <!-- datalist: 출발/도착 공항 자동완성 -->
+        <datalist id="airport-list">
+          <option value="인천공항">
+          <option value="뉴욕 JFK 공항">
+        </datalist>
+
+        <div class="form-group">
+          <label for="departure">출발 공항</label>
+          <input list="airport-list"
+                 id="departure"
+                 name="departure"
+                 placeholder="출발 공항 선택"
+                 required>
+        </div>
+
+        <div class="form-group">
+          <label for="arrival">도착 공항</label>
+          <input list="airport-list"
+                 id="arrival"
+                 name="arrival"
+                 placeholder="도착 공항 선택"
+                 required>
+        </div>
+
+        <div class="form-group">
+          <label for="date-start">출발 날짜</label>
+          <input type="date"
+                 id="date-start"
+                 name="date_start"
+                 required>
+        </div>
+
+        <div class="form-group">
+          <label for="seat-class">좌석 등급</label>
+          <select id="seat-class"
+                  name="seat_class"
+                  required>
+            <option value="ECONOMY">ECONOMY</option>
+            <option value="BUSINESS">BUSINESS</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <!-- 조회 버튼 -->
+          <button type="submit" class="btn-query">조회하기</button>
+        </div>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

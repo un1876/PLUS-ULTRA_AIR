@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>예약 결제 – CNU AIR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+        rel="stylesheet"/>
+  <style>
+    /* 스타일 정의 (건드리지 마세요) */
+    :root {
+      --bg-white: #fff;
+      --bg-light: #fafafa;
+      --text-dark: #333;
+      --text-title: #222;
+      --border-gray: #e0e0e0;
+      --btn-dark: #333;
+      --btn-hover: #555;
+      --shadow-light: rgba(0,0,0,0.05);
+      --spacing: 16px;
+      --radius: 6px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-dark);
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      padding: var(--spacing) 32px;
+      background: var(--bg-white);
+      border-bottom: 1px solid var(--border-gray);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header h1 {
+      font-size: 28px;
+      color: var(--text-title);
+      flex: 1;
+      font-weight: 700;
+    }
+    .header h1 a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .nav { display: flex; gap: 8px; }
+    .nav button {
+      padding: 6px 12px;
+      border: 1px solid var(--border-gray);
+      background: var(--bg-light);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 14px;
+    }
+    .nav button:hover {
+      background: var(--btn-hover);
+      color: #fff;
+    }
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: var(--spacing) auto;
+      gap: 24px;
+      padding: 0 16px;
+    }
+    .sidebar {
+      width: 200px;
+      background: var(--bg-white);
+      border-right: 1px solid var(--border-gray);
+      padding: 24px 16px;
+      font-size: 14px;
+    }
+    .sidebar h3 {
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: var(--text-title);
+    }
+    .sidebar ul { list-style: none; }
+    .sidebar li { margin-bottom: 8px; }
+    .sidebar li.active a { font-weight: 500; color: var(--btn-dark); }
+    .sidebar a { text-decoration: none; color: var(--text-dark); }
+    .sidebar a:hover { color: var(--btn-hover); }
+    .main {
+      flex: 1;
+      background: var(--bg-white);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 12px var(--shadow-light);
+      padding: 32px;
+      position: relative;
+    }
+    .main h2 {
+      font-size: 22px;
+      margin-bottom: 24px;
+      color: var(--text-title);
+      font-weight: 700;
+    }
+    .info-box {
+      background: var(--bg-light);
+      border: 1px solid var(--border-gray);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-light);
+      border: 1px solid var(--border-gray);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+    .info-row:last-of-type { margin-bottom: 24px; }
+    .info-row label { font-weight: 500; }
+    .btn-send {
+      display: inline-block;
+      padding: 10px 20px;
+      background: var(--btn-dark);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-send:hover {
+      background: var(--btn-hover);
+    }
+    /* 팝업 스타일 */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      background: var(--bg-white);
+      border: 1px solid var(--border-gray);
+      box-shadow: 0 4px 12px var(--shadow-light);
+      border-radius: var(--radius);
+      padding: 24px;
+      z-index: 1000;
+      width: 320px;
+      text-align: center;
+    }
+    .popup p {
+      margin-bottom: 16px;
+      font-size: 16px;
+      color: var(--text-title);
+    }
+    .popup button {
+      margin: 0 8px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      background: var(--btn-dark);
+      color: #fff;
+      transition: background 0.2s;
+    }
+    .popup button:hover {
+      background: var(--btn-hover);
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.3);
+      z-index: 900;
+    }
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-gray); }
+      .main { margin-top: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>
+      <!-- 클릭 시 홈(로그인 완료) 페이지로 이동 -->
+      <a href="{{ url_for('auth.login_complete_homepage') }}">CNU-AIR</a>
+    </h1>
+    <div class="nav">
+      <!-- 네비게이션 버튼: 항공편 페이지 이동 -->
+      <button onclick="location.href='{{ url_for('reservation.flights_form') }}'">항공편</button>
+      <!-- 로그아웃 처리 -->
+      <button onclick="location.href='{{ url_for('auth.logout') }}'">Log out</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <aside class="sidebar">
+      <h3>My page</h3>
+      <ul>
+        <li><a>회원 정보 수정/삭제</a></li>
+        <li><a>이력 조회</a></li>
+        <li class="active">
+          <!-- 현재 활성화된 메뉴: 예약 결제 -->
+          <a href="#">예약 결제</a>
+        </li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <h2>예약 결제</h2>
+
+      <div class="info-box">
+        <!-- 예약 기본 정보 표시 -->
+        <strong>예약 번호:</strong> {{ reserve_no }}<br>
+        {{ airline }} {{ flightNo }} / {{ depAP }} → {{ arrAP }} / {{ seatClass }}
+      </div>
+
+      <!-- 출발/도착/좌석/금액/예약자 정보 -->
+      <div class="info-row">
+        <label>출발 시각:</label>
+        <span>{{ depDT }}</span>
+      </div>
+      <div class="info-row">
+        <label>도착 시각:</label>
+        <span>{{ arrDT }}</span>
+      </div>
+      <div class="info-row">
+        <label>남은 좌석:</label>
+        <span>{{ remaining }}석</span>
+      </div>
+      <div class="info-row">
+        <label>결제 금액:</label>
+        <span>{{ price }}원</span>
+      </div>
+      <div class="info-row">
+        <label>예약자:</label>
+        <span>{{ user_name }}님</span>
+      </div>
+
+      <!-- 결제 폼: 숨겨진 필드로 데이터 전송 -->
+      <form id="payForm" action="{{ url_for('reservation.pay') }}" method="post">
+        <input type="hidden" name="flightNo" value="{{ flightNo }}" />
+        <input type="hidden" name="departureDateTime" value="{{ depDT }}" />
+        <input type="hidden" name="seatClass" value="{{ seatClass }}" />
+        <input type="hidden" name="paymentAmount" value="{{ price }}" />
+        <div style="text-align:right; margin-top:24px;">
+          {% if remaining != 0 %}
+            <!-- 남은 좌석 있을 때만 '결제하기' 버튼 표시 -->
+            <button type="submit" class="btn-send">결제하기</button>
+          {% endif %}
+        </div>
+      </form>
+
+      {% if show_email_popup %}
+        <!-- 결제 직후 이메일 전송 팝업 버튼 -->
+        <div style="text-align:right; margin-top:24px;">
+          <button class="btn-send" onclick="showPopup()">항공권 이메일로 전송하기</button>
+        </div>
+      {% endif %}
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div style="margin-top:16px;">
+            <!-- 플래시 메시지 출력 -->
+            {% for category, msg in messages %}
+              <p style="color: {{ 'green' if category=='success' else 'red' }};">{{ msg }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+    </main>
+  </div>
+
+  <!-- 팝업을 위한 오버레이 -->
+  <div class="overlay" id="overlay" onclick="hidePopup()"></div>
+
+  <!-- 이메일 전송 확인 팝업 -->
+  <div class="popup" id="popup">
+    <p>결제가 완료되었습니다.<br>항공권을 이메일로 전송하시겠습니까?</p>
+    <form action="{{ url_for('reservation.send_ticket_email') }}" method="post">
+      <!-- 전송에 필요한 데이터 숨김 필드로 포함 -->
+      <input type="hidden" name="reserve_no" value="{{ reserve_no }}" />
+      <input type="hidden" name="flightNo" value="{{ flightNo }}" />
+      <input type="hidden" name="depDT" value="{{ depDT }}" />
+      <input type="hidden" name="arrDT" value="{{ arrDT }}" />
+      <input type="hidden" name="seatClass" value="{{ seatClass }}" />
+      <input type="hidden" name="paymentAmount" value="{{ price }}" />
+      <button type="button" onclick="hidePopup()">취소</button>
+      <button type="submit">확인</button>
+    </form>
+  </div>
+
+  <script>
+    // 팝업 표시 함수
+    function showPopup() {
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById('popup').style.display   = 'block';
+    }
+    // 팝업 숨김 함수
+    function hidePopup() {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('popup').style.display   = 'none';
+    }
+  </script>
+</body>
+</html>

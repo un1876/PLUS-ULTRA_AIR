@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 로그인 - CNU AIR</title>
+  <style>
+    /* 기본 스타일 */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #f8f8f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      margin-bottom: 8px;
+      font-size: 48px;
+      color: #111;
+    }
+    .subtitle {
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #555;
+      letter-spacing: 1px;
+    }
+    .login-card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 32px;
+      width: 320px;
+      box-sizing: border-box;
+    }
+    .login-card label {
+      display: block;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .login-card input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .login-card input:focus {
+      border-color: #7b61ff;
+    }
+    .login-card button {
+      width: 100%;
+      padding: 12px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .login-card button:hover {
+      background-color: #555;
+    }
+    .forgot {
+      display: block;
+      margin-top: 12px;
+      font-size: 13px;
+      text-align: right;
+    }
+    .forgot a {
+      color: #333;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .forgot a:hover {
+      color: #7b61ff;
+    }
+  </style>
+</head>
+<body>
+  <!-- 페이지 제목 -->
+  <h1>CNU-AIR</h1>
+
+  <!-- 에러 메시지 표시 -->
+  {% with messages = get_flashed_messages(category_filter=["error"]) %}
+    {% if messages %}
+      <div class="flash-error">
+        {{ messages[0] }}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- 관리자 로그인 폼 -->
+  <form class="login-form" method="POST" action="{{ url_for('auth.admin_login') }}">
+    <!-- 관리자 섹션 타이틀 -->
+    <div class="subtitle">Administrator</div>
+    <div class="login-card">
+      <!-- 사용자 ID 입력 -->
+      <label for="cno">회원 ID</label>
+      <input type="text" id="cno" name="cno" placeholder="아이디 입력" required>
+
+      <!-- 비밀번호 입력 -->
+      <label for="passwd">Password</label>
+      <input type="password" id="passwd" name="passwd" placeholder="비밀번호 입력" required>
+
+      <!-- 로그인 버튼 -->
+      <button type="submit">Log In</button>
+    </div>
+  </form>
+</body>
+</html>

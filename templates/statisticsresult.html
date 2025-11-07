@@ -1,0 +1,123 @@
+<!-- =====================  Footer Section ===================== -->
+<div class="footer-container">
+  <!-- ◇ 6-Column Grid ── 각 column 은 ‘menu-item’ 카드 -->
+  <div class="footer-menu">
+    <!-- ─── Column #1 : 공지사항 ─── -->
+    <div class="menu-item">
+      <i>ℹ️</i>
+      <h3>공지사항</h3>
+      <ul>
+        <li>국내선 유류할증료</li>
+        <li>국내선 마일리지</li>
+      </ul>
+    </div>
+
+    <!-- ─── Column #2 : 회사소개 ─── -->
+    <div class="menu-item">
+      <i>ℹ️</i>
+      <h3>회사소개</h3>
+      <ul>
+        <li>C-AIR에 대하여</li>
+        <li>투자정보</li>
+        <li>지속가능경영</li>
+        <li>뉴스룸</li>
+      </ul>
+    </div>
+
+    <!-- ─── Column #3 : 고객지원 ─── -->
+    <div class="menu-item">
+      <i>ℹ️</i>
+      <h3>고객지원</h3>
+      <ul>
+        <li>고객의 말씀</li>
+        <li>서비스 센터</li>
+        <li>e-서식함</li>
+      </ul>
+    </div>
+
+    <!-- ─── Column #4 : 약관 및 규정 ─── -->
+    <div class="menu-item">
+      <i>ℹ️</i>
+      <h3>약관 및 규정</h3>
+      <ul>
+        <li>개인정보 처리방침</li>
+        <li>이용 약관</li>
+        <li>운송약관 및 고지사항</li>
+        <li>소비자 안전 관련 정보</li>
+      </ul>
+    </div>
+
+    <!-- ─── Column #5 : 기타 안내 ─── -->
+    <div class="menu-item">
+      <i>ℹ️</i>
+      <h3>기타 안내</h3>
+      <ul>
+        <li>기업 출장 / 전용기</li>
+        <li>고객 안내 서비스</li>
+        <li>항공교통이용자 서비스 계획</li>
+        <li>관련 사이트</li>
+      </ul>
+    </div>
+
+    <!-- ─── Column #6 : 인기 방문 국가 ─── -->
+    <div class="menu-item">
+      <i>ℹ️</i>
+      <h3>인기 방문 국가</h3>
+      <ul>
+        <li>일본</li>
+        <li>포르투갈</li>
+        <li>미국</li>
+        <li>호주</li>
+        <li>중국</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- =====================  Footer CSS ===================== -->
+<style>
+/* ────────── 레이아웃 컨테이너 ────────── */
+.footer-container {
+  background-color: #fff;          /* Footer 배경 */
+  padding: 40px 20px;              /* 상하 40px, 좌우 20px */
+  border-top: 1px solid #e0e0e0;   /* 페이지와 구분선 */
+}
+
+/* ────────── 3×2 Grid : menu-item 카드 6개 ────────── */
+.footer-menu {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3-열 균등 분할 */
+  gap: 30px;                              /* 카드 간격 */
+  max-width: 1200px;                      /* 중앙 정렬 폭 */
+  margin: 0 auto;
+}
+
+/* ────────── 개별 카드 ────────── */
+.menu-item {
+  text-align: left;
+}
+.menu-item i {
+  font-size: 20px;
+  color: #666;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+.menu-item h3 {
+  font-size: 18px;
+  margin: 8px 0;
+}
+
+/* ────────── 리스트 스타일 ────────── */
+.menu-item ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.menu-item ul li::before {
+  content: "* ";
+  color: #555;
+}
+</style>

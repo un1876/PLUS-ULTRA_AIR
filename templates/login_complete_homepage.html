@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 완료 – CNU AIR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-bg: #fff;
+      --secondary-bg: #fafafa;
+      --text-default: #333;
+      --text-inactive: #666;
+      --border-color: #ddd;
+      --btn-bg: #f5f5f5;
+      --btn-hover: #e0e0e0;
+      --btn-border: #ccc;
+      --card-shadow: rgba(0,0,0,0.05);
+      --accent: #222;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--secondary-bg);
+      color: var(--text-default);
+    }
+    .header {
+      background: var(--primary-bg);
+      padding: 16px 40px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header h1 {
+      font-size: 32px;
+      margin: 0;
+      flex: 1;
+      color: var(--accent);
+    }
+    .nav-input {
+      padding: 8px 12px;
+      border: 1px solid var(--btn-border);
+      border-radius: 4px;
+      font-size: 14px;
+      outline: none;
+      width: 240px;
+      margin-right: 12px;
+    }
+    .nav-btn {
+      margin-left: 8px;
+      padding: 8px 16px;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--text-default);
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .nav-btn:hover { background: var(--btn-hover); }
+    main { margin: 0; padding: 40px 40px 0; max-width:1200px; margin-left:auto; margin-right:auto;}
+    .welcome-box {
+      background: var(--primary-bg);
+      padding: 32px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px var(--card-shadow);
+      text-align: center;
+    }
+    .welcome-box h2 {
+      margin-bottom: 16px;
+      font-size: 24px;
+      color: var(--accent);
+    }
+    .welcome-box p {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+    .footer {
+      background: var(--primary-bg);
+      padding: 40px 20px;
+      border-top: 1px solid var(--border-color);
+    }
+    .footer__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 32px;
+    }
+    .footer__item {
+      background: var(--secondary-bg);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 12px var(--card-shadow);
+      text-align: left;
+      transition: transform 0.2s;
+    }
+    .footer__item:hover { transform: translateY(-6px); }
+    .footer__icon {
+      font-size: 28px;
+      background: var(--btn-bg);
+      color: var(--text-inactive);
+      width: 48px;
+      height: 48px;
+      line-height: 48px;
+      border-radius: 50%;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .footer__title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 12px;
+    }
+    .footer__list {
+      list-style: none;
+      padding: 0; margin: 0;
+      font-size: 14px; line-height: 1.6;
+      color: var(--text-default);
+    }
+    .footer__list li {
+      position: relative;
+      padding-left: 16px;
+    }
+    .footer__list li::before {
+      content: '\2022';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+    @media (max-width: 600px) {
+      .header, .footer { padding: 16px; }
+      .nav-input { width: 160px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <!-- 로고 클릭 시 메인 페이지로 이동 -->
+    <h1>CNU-AIR</h1>
+    <!-- 검색 입력창 (시각적 요소) -->
+    <input class="nav-input" type="text" placeholder="Search...">
+    <!-- 검색 버튼 (기능: 추후 JS 연결 예정) -->
+    <button class="nav-btn">Search</button>
+    <!-- 항공편 조회 페이지로 이동 -->
+    <button class="nav-btn"
+            onclick="location.href='{{ url_for('reservation.flights_form') }}'">
+      항공편 조회
+    </button>
+    <!-- "My page"로 이동: 로그인 완료 후 개인 페이지 진입 -->
+    <button class="nav-btn"
+            onclick="location.href='{{ url_for('my_page') }}'">
+      My page
+    </button>
+    <!-- 로그아웃 처리 -->
+    <button class="nav-btn" onclick="location.href='{{ url_for('auth.logout') }}'">
+      Log Out
+    </button>
+  </header>
+
+  <main>
+    <div class="welcome-box">
+      <!-- 환영 메시지: 세션에서 받은 사용자 이름 출력 -->
+      <h2>환영합니다, {{ user_name }}님!</h2>
+      <!-- 회원번호 표시 -->
+      <p>회원번호: {{ user_id }}</p>
+      <p>성공적으로 로그인되었습니다.</p>
+      <!-- 항공편 검색 페이지로 빠르게 이동 -->
+      <button class="nav-btn"
+              onclick="location.href='{{ url_for('reservation.flights_form') }}'">
+        항공편 조회 바로가기
+      </button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__grid">
+        <!-- 공지사항 섹션 -->
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">공지사항</h3>
+          <ul class="footer__list">
+            <li>국내선 유류할증료</li>
+            <li>국내선 마일리지 안내</li>
+          </ul>
+        </div>
+        <!-- 회사소개 섹션 -->
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">회사소개</h3>
+          <ul class="footer__list">
+            <li>C-AIR에 대하여</li>
+            <li>투자정보</li>
+            <li>지속가능경영</li>
+            <li>뉴스룸</li>
+          </ul>
+        </div>
+        <!-- 고객지원 섹션 -->
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">고객지원</h3>
+          <ul class="footer__list">
+            <li>고객의 말씀</li>
+            <li>서비스 센터</li>
+            <li>e-서식함</li>
+          </ul>
+        </div>
+        <!-- 약관 및 규정 섹션 -->
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">약관 및 규정</h3>
+          <ul class="footer__list">
+            <li>개인정보 처리방침</li>
+            <li>이용 약관</li>
+            <li>운송약관 및 고지사항</li>
+            <li>소비자 안전 정보</li>
+          </ul>
+        </div>
+        <!-- 기타 안내 섹션 -->
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">기타 안내</h3>
+          <ul class="footer__list">
+            <li>기업 출장 / 전용기</li>
+            <li>고객 안내 서비스</li>
+            <li>항공교통이용자 서비스 계획</li>
+            <li>관련 사이트</li>
+          </ul>
+        </div>
+        <!-- 인기 방문 국가 섹션 -->
+        <div class="footer__item">
+          <div class="footer__icon">ℹ️</div>
+          <h3 class="footer__title">인기 방문 국가</h3>
+          <ul class="footer__list">
+            <li>일본</li>
+            <li>포르투갈</li>
+            <li>미국</li>
+            <li>호주</li>
+            <li>중국</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

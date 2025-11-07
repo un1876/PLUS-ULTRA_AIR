@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 - CNU AIR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #f8f8f8;
+      color: #333;
+    }
+    .login-container {
+      width: 360px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 32px;
+    }
+    .login-container h1 {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 24px;
+      color: #222;
+    }
+    .login-form label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #555;
+    }
+    .login-form input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .login-form input:focus {
+      border-color: #7B61FF;
+    }
+    .login-form button {
+      width: 100%;
+      padding: 12px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .login-form button:hover {
+      background-color: #555;
+    }
+    .login-links {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .login-links a {
+      display: block;
+      color: #333;
+      text-decoration: none;
+      margin: 6px 0;
+      transition: color 0.2s;
+    }
+    .login-links a:hover {
+      color: #7B61FF;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>CNU-AIR</h1>
+    <!-- 오류 플래시 메시지: 로그인 실패 시 출력 -->
+    {% with messages = get_flashed_messages(category_filter=["error"]) %}
+      {% if messages %}
+        <div class="flash-error">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+    <!-- 로그인 폼: POST 방식, auth.login 엔드포인트로 전송 -->
+    <form class="login-form" method="POST" action="{{ url_for('auth.login') }}">
+      <!-- 회원 ID 입력 필드 -->
+      <label for="member-id">회원 ID</label>
+      <input type="text" id="cno" name="cno" placeholder="아이디 입력" required>
+      <!-- 비밀번호 입력 필드 -->
+      <label for="password">Password</label>
+      <input type="password" id="passwd" name="passwd" placeholder="비밀번호 입력" required>
+      <!-- 로그인 버튼 -->
+      <button type="submit">Log In</button>
+    </form>
+    <div class="login-links">
+      <!-- 추가 링크: 비밀번호 찾기, 계정 생성 -->
+      <a href="#">Forgot password?</a>
+      <a href="#">Create account</a>
+      <!-- 관리자 로그인 페이지로 이동 -->
+      <a onclick="location.href='{{ url_for('admin_login') }}'">관리자 로그인</a>
+    </div>
+  </div>
+</body>
+</html>
