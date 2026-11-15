@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>이력 조회 – 예약 내역 조회 | CNU-AIR</title>
+  <title>이력 조회 – 예약 내역 조회 | PLUS-ULTRA AIR</title>
 
   <!-- Google Font import -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
@@ -196,13 +196,14 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/plus_ultra.css') }}">
 </head>
 <body>
   <!-- ───────── HEADER ───────── -->
   <header class="header">
     <h1>
       <!-- 로고 클릭 시 로그인 완료 홈 -->
-      <a href="{{ url_for('auth.login_complete_homepage') }}">CNU-AIR</a>
+      <a href="{{ url_for('auth.login_complete_homepage') }}">PLUS-ULTRA AIR</a>
     </h1>
     <div class="nav">
       <input type="text" placeholder="Search...">

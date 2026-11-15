@@ -118,11 +118,12 @@
       color: var(--link-hover);
     }
   </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/plus_ultra.css') }}">
 </head>
 <body>
   <header class="header">
     <!-- 로고: 클릭 시 메인 페이지(로그인 완료 홈)로 이동 -->
-    <h1><a href="{{ url_for('auth.login_complete_homepage') }}">CNU-AIR</a></h1>
+    <h1><a href="{{ url_for('auth.login_complete_homepage') }}">PLUS-ULTRA AIR</a></h1>
     <div class="nav-buttons">
       <!-- 검색 입력 필드 -->
       <input type="text" placeholder="Search...">

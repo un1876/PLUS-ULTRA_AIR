@@ -79,10 +79,11 @@
       color: #7B61FF;
     }
   </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/plus_ultra.css') }}">
 </head>
 <body>
   <div class="login-container">
-    <h1>CNU-AIR</h1>
+    <h1>PLUS-ULTRA AIR</h1>
     <!-- 오류 플래시 메시지: 로그인 실패 시 출력 -->
     {% with messages = get_flashed_messages(category_filter=["error"]) %}
       {% if messages %}

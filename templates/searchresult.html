@@ -135,13 +135,14 @@
       .seat-row{flex-direction:column;align-items:stretch;}
     }
   </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/plus_ultra.css') }}">
 </head>
 <body>
   <!-- ▣ 헤더(로고 + 네비게이션) -->
   <header class="header">
     <h1>
       <!--  » 로그인 홈으로 돌아가기 -->
-      <a href="{{ url_for('auth.login_complete_homepage') }}">CNU-AIR</a>
+      <a href="{{ url_for('auth.login_complete_homepage') }}">PLUS-ULTRA AIR</a>
     </h1>
     <div class="nav">
       <button onclick="location.href='{{ url_for('reservation.flights_form') }}'">항공편</button>

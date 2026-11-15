@@ -1,0 +1,312 @@
+/* ---------------------------------------------------------------------------
+ * PLUS-ULTRA AIR 공통 테마
+ * homepage.html 의 네이비/골드/레드 디자인을 나머지 페이지에 입힌다.
+ * 각 페이지의 <style> 바로 뒤에 링크되어, 레이아웃은 그대로 두고
+ * 색·배경·테두리·그림자만 덮어쓴다. (모든 선택자에 body 를 붙여 우선순위 확보)
+ * ------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+:root{
+  --pu-navy:#0a0e2e;
+  --pu-navy-2:#0b1547;
+  --pu-card:#0f1b4b;
+  --pu-red:#e11d2e;
+  --pu-red-2:#ff4d5e;
+  --pu-gold:#ffd54a;
+  --pu-gold-2:#ffb300;
+  --pu-violet:#8239ff;
+  --pu-text:#eaf0ff;
+  --pu-text-dim:#a8b1d9;
+  --pu-border:rgba(255,255,255,.12);
+  --pu-surface:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+  --pu-field:rgba(255,255,255,.06);
+  --pu-btn:linear-gradient(135deg,var(--pu-gold),var(--pu-gold-2));
+  --pu-btn-hover:linear-gradient(135deg,#ffe76b,#ffc107);
+  --pu-btn-red:linear-gradient(135deg,var(--pu-red-2),var(--pu-red));
+  --pu-shadow:0 4px 12px rgba(130,57,255,.28);
+}
+
+/* ── 배경·글자 ─────────────────────────────────────────── */
+html body{
+  font-family:'Noto Sans KR',sans-serif;
+  color:var(--pu-text);
+  background:
+    radial-gradient(1100px 700px at 85% -10%, rgba(255,234,138,.18), transparent 45%),
+    radial-gradient(900px 600px at -10% 20%, rgba(130,57,255,.20), transparent 40%),
+    linear-gradient(180deg, var(--pu-navy) 0%, var(--pu-navy-2) 60%, #0f1b4b 100%);
+  background-attachment:fixed;
+  min-height:100vh;
+}
+body hr{border:0;border-top:1px solid var(--pu-border);}
+
+/* ── 헤더 ──────────────────────────────────────────────── */
+body .header{
+  background:linear-gradient(180deg,rgba(10,14,46,.85),rgba(10,14,46,.7));
+  border-bottom:1px solid var(--pu-border);
+  color:var(--pu-text);
+}
+body .header h1,
+body .header h1 a,
+body .login-container h1,
+body .login-card h1,
+body > h1{
+  color:var(--pu-gold);
+  text-decoration:none;
+  text-shadow:0 0 10px rgba(255,213,74,.6), 0 0 26px rgba(28,63,240,.28);
+}
+body .subtitle{color:var(--pu-text-dim);}
+
+/* 헤더 버튼 (homepage 의 .nav-btn 과 동일) */
+body .nav-btn,
+body .nav button,
+body .header .nav button,
+body .nav-buttons button{
+  border:1px solid rgba(255,215,0,.65);
+  background:var(--pu-btn);
+  color:#0a0e2e;
+  border-radius:6px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.06), 0 6px 18px rgba(255,213,74,.22);
+}
+body .nav-btn:hover,
+body .nav button:hover,
+body .header .nav button:hover,
+body .nav-buttons button:hover{
+  background:var(--pu-btn-hover);
+  color:#0a0e2e;
+  box-shadow:0 0 0 1px rgba(255,255,255,.08), 0 8px 22px rgba(255,235,124,.32);
+}
+/* 현재 탭 표시 */
+body .nav-btn.active{
+  background:linear-gradient(135deg,#1c3ff0 0%, #6a2bf8 60%, var(--pu-red) 100%);
+  color:#fff;
+  border-color:rgba(130,57,255,.8);
+}
+
+/* 검색 입력칸 */
+body .nav-input,
+body .nav input,
+body .nav input[type="text"],
+body .nav-buttons input[type="text"]{
+  border:1px solid rgba(255,255,255,.18);
+  background:var(--pu-field);
+  color:var(--pu-text);
+}
+body .nav-input::placeholder,
+body .nav input::placeholder,
+body .nav-buttons input::placeholder{color:#9aa6db;}
+
+/* ── 사이드바 + 본문 카드 ──────────────────────────────── */
+body .sidebar,
+body .main,
+body .welcome-box,
+body .login-container,
+body .login-card,
+body .flight-card,
+body .stats-panel,
+body .popup{
+  background:var(--pu-surface);
+  background-color:rgba(15,27,75,.55);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:var(--pu-shadow);
+  color:var(--pu-text);
+}
+body .sidebar{border-radius:8px;}
+body .popup{background-color:var(--pu-card);}
+body .overlay{background:rgba(5,7,25,.7);}
+
+body .sidebar h3,
+body .main h2,
+body section h3,
+body .stats-panel h3,
+body .flight-card h3,
+body .welcome-box h2,
+body .container > h2{
+  color:var(--pu-gold);
+  text-shadow:0 0 8px rgba(255,213,74,.35);
+}
+body .welcome-box p,
+body .popup p{color:var(--pu-text);}
+
+body .sidebar a,
+body .sidebar ul li a{color:var(--pu-text-dim);}
+body .sidebar a:hover,
+body .sidebar ul li a:hover{color:var(--pu-gold);}
+body .sidebar li.active > a,
+body .sidebar li.active a,
+body .sidebar ul li.active a{color:var(--pu-gold);font-weight:700;}
+
+/* 본문 안 링크 (마이페이지 메뉴 등) */
+body .main a,
+body .main ul li a{color:var(--pu-gold);}
+body .main a:hover,
+body .main ul li a:hover{color:#ffe76b;}
+/* my_page "회원 탈퇴" 링크는 인라인 style 로 파란색이 박혀 있어 !important 로 레드 처리 */
+body .main ul li a[style]{color:var(--pu-red-2) !important;}
+
+/* ── 정보 상자 / 행 ────────────────────────────────────── */
+body .info-box,
+body .info-row,
+body .info-card,
+body .card-list,
+body .seat-row input,
+body .sort-form,
+body .filter-form{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--pu-border);
+  color:var(--pu-text);
+}
+body .card-list li{border-bottom-color:var(--pu-border);}
+
+/* my_page 처럼 .container 자체가 흰 카드인 페이지 → 투명하게 */
+body .container{
+  background:transparent;
+  border-color:var(--pu-border);
+}
+body .info-card strong,
+body .info-row label,
+body .card-list span:first-child{color:var(--pu-text);}
+body .card-list span:last-child,
+body .datetime,
+body .remain{color:var(--pu-text-dim);}
+body .route{color:var(--pu-text);}
+body .price-tag{
+  background:linear-gradient(135deg,#1c3ff0,#6a2bf8);
+  color:#fff;
+}
+body .no-results{color:var(--pu-red-2);}
+
+/* ── 폼 입력 ───────────────────────────────────────────── */
+body .form-group label,
+body .login-form label,
+body .login-card label,
+body .filter-form label,
+body .sort-form label{color:var(--pu-text);}
+
+body .form-group input,
+body .form-group input[type="text"],
+body .form-group input[type="date"],
+body .form-group select,
+body .login-form input,
+body .login-card input,
+body .filter-form input[type="datetime-local"],
+body .sort-form select{
+  background:var(--pu-field);
+  border:1px solid rgba(255,255,255,.18);
+  color:var(--pu-text);
+  color-scheme:dark;
+}
+/* search.html 공항 입력칸(type 속성 없음)도 날짜칸과 같은 모양으로 */
+body .form-group input[list]{flex:1;padding:8px 12px;border-radius:6px;font-size:14px;}
+body .form-group select option,
+body .sort-form select option{background:var(--pu-card);color:var(--pu-text);}
+body .form-group input::placeholder,
+body .login-form input::placeholder,
+body .login-card input::placeholder{color:#9aa6db;}
+body .form-group input:focus,
+body .form-group select:focus,
+body .login-form input:focus,
+body .login-card input:focus{
+  border-color:var(--pu-gold);
+  box-shadow:0 0 0 2px rgba(255,213,74,.25);
+}
+
+/* ── 주요 버튼 (조회·로그인·결제·예약·메일 전송) ───────── */
+body .actions .btn-query,
+body .login-form button,
+body .login-card button,
+body .btn-send,
+body .popup button,
+body .seat-row .btn-book,
+body .filter-form button,
+body .filter-toggle,
+body .tab-buttons button{
+  background:var(--pu-btn);
+  color:#0a0e2e;
+  border:1px solid rgba(255,215,0,.65);
+  box-shadow:0 6px 18px rgba(255,213,74,.22);
+}
+body .actions .btn-query:hover,
+body .login-form button:hover,
+body .login-card button:hover,
+body .btn-send:hover,
+body .popup button:hover,
+body .seat-row .btn-book:hover{
+  background:var(--pu-btn-hover);
+  color:#0a0e2e;
+}
+
+/* 취소·상세 같은 강조 버튼은 레드 */
+body .btn-cancel,
+body .btn-detail{
+  background:var(--pu-btn-red);
+  color:#fff;
+  border:1px solid rgba(255,77,94,.7);
+  box-shadow:0 6px 18px rgba(225,29,46,.3);
+}
+body .btn-cancel:hover,
+body .btn-detail:hover{
+  background:linear-gradient(135deg,#ff6b7a,#f0283a);
+  color:#fff;
+}
+
+/* 로그인 하단 링크 */
+body .login-links a,
+body .forgot a{color:var(--pu-text-dim);}
+body .login-links a:hover,
+body .forgot a:hover{color:var(--pu-gold);}
+
+/* ── 표 (관리자 통계) ──────────────────────────────────── */
+body table{border-collapse:collapse;color:var(--pu-text);}
+body th{
+  background:rgba(28,63,240,.25);
+  color:var(--pu-gold);
+  border-color:var(--pu-border);
+}
+body td{
+  background:rgba(255,255,255,.03);
+  border-color:var(--pu-border);
+}
+
+/* ── 하단 안내 카드 (관리자 홈 · 로그인 완료 홈) ──────────
+ * homepage.html 의 .footer__item 디자인과 맞춘다.            */
+body .footer,
+body .footer-container{
+  background:linear-gradient(180deg,rgba(10,14,46,.92),rgba(10,14,46,.8));
+  border-top:1px solid var(--pu-border);
+  color:var(--pu-text);
+}
+body .footer__item,
+body .menu-item{
+  background:var(--pu-surface);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;
+  box-shadow:var(--pu-shadow);
+  color:var(--pu-text);
+  transition:transform .2s, box-shadow .2s;
+}
+body .footer__item:hover,
+body .menu-item:hover{
+  transform:translateY(-6px);
+  box-shadow:0 10px 26px rgba(28,63,240,.35), 0 0 0 1px rgba(255,213,74,.28) inset;
+}
+body .footer__icon,
+body .menu-item i{
+  background:linear-gradient(135deg,#1c3ff0 0%, #6a2bf8 50%, #e11d2e 100%);
+  color:#fff;
+  width:48px;height:48px;line-height:48px;border-radius:50%;
+  text-align:center;font-style:normal;
+  box-shadow:0 0 14px rgba(130,57,255,.45);
+}
+body .footer__title,
+body .menu-item h3{
+  color:var(--pu-gold);
+  text-shadow:0 0 8px rgba(255,213,74,.45);
+}
+body .footer__list,
+body .menu-item ul{color:var(--pu-text);}
+body .footer__list li::before,
+body .menu-item ul li::before{
+  content:'\2022  ';
+  color:var(--pu-red);
+  text-shadow:0 0 8px rgba(225,29,46,.45);
+}
